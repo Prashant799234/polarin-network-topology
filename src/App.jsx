@@ -183,12 +183,7 @@ function Icon({ path, size = 20, w = 1.9 }) {
 }
 
 function RackGlyph() {
-  return (
-    <>
-      <image href={DATACENTRE_ICON} x={-36} y={-36} width={72} height={72} preserveAspectRatio="xMidYMid meet" />
-      <circle cx="0" cy="-16.5" r="3.6" fill="#ED1D24" />
-    </>
-  );
+  return <image href={DATACENTRE_ICON} x={-36} y={-36} width={72} height={72} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* seated on its platform — underside just clears the tile */
@@ -493,26 +488,6 @@ function IsometricMap({
             );
           })}
 
-          {/* down-link callout */}
-          {links.filter((l) => l.latencyMs != null).map((l, i) => {
-            const a = nodeById.get(l.from), b = nodeById.get(l.to);
-            if (!a || !b) return null;
-            const mx = (a.wx + b.wx) / 2, my = (a.wy + b.wy) / 2;
-            return (
-              <g key={`lat-${i}`} style={{ pointerEvents: "none" }}>
-                <circle cx={mx} cy={my} r="9" fill={C.down} />
-                <text x={mx} y={my + 3.5} textAnchor="middle" fill="#fff" fontFamily={DISPLAY} fontWeight="700" fontSize="11">!</text>
-                {full && (
-                  <g transform={`translate(${mx} ${my - 44})`}>
-                    <rect x="-54" y="-22" width="108" height="40" rx="10" fill="#fff" stroke="#f6d5d6" filter="url(#chipShadow)" />
-                    <text x="0" y="-5" textAnchor="middle" fill={C.down} fontFamily={DISPLAY} fontWeight="600" fontSize="11.5">High latency</text>
-                    <text x="0" y="11" textAnchor="middle" fill={C.steel} fontFamily={BODY} fontSize="11">{l.latencyMs.toFixed(2)} ms</text>
-                  </g>
-                )}
-              </g>
-            );
-          })}
-
           {/* PoPs, painted back to front */}
           {[...nodes].sort((a, b) => a.wy - b.wy || a.wx - b.wx).map((n) => {
             const dc = n.dc;
@@ -520,9 +495,8 @@ function IsometricMap({
             const pos = held && dragTarget ? dragTarget : n;
             const isSel = dc.id === selectedId;
             const isHov = dc.id === hover;
-            const meta = STATUS[dc.status];
             const isCloud = dc.kind === "cloud";
-            const chipW = Math.max(38, dc.provider.length * 6.8 + 22);
+            const chipW = Math.max(64, dc.provider.length * 7.2 + 28);
             const edge = held ? (snap.valid ? C.teal : C.down) : isSel ? C.teal : isHov ? C.tealBright : C.sky;
 
             return (
@@ -540,26 +514,17 @@ function IsometricMap({
 
                 <g filter="url(#nodeShadow)">{isCloud ? <CloudGlyph /> : <RackGlyph />}</g>
 
-                {full && (
-                  <>
-                    <g transform={`translate(${PH_HW * 0.42} ${PH_HH * 0.42})`}>
-                      <rect x="-25" y="-9" width="50" height="18" rx="9" fill="url(#tealPill)" filter="url(#chipShadow)" />
-                      <text x="0" y="4" textAnchor="middle" fill="#fff" fontFamily={BODY} fontWeight="700" fontSize="10.5">{dc.ports ?? 2} ports</text>
-                    </g>
-                    <g transform={`translate(${-PH_HW * 0.28} ${isCloud ? -66 : -70})`}>
-                      <rect x={-chipW / 2} y="-11" width={chipW} height="22" rx="6" fill="#ffffff" filter="url(#chipShadow)" />
-                      <circle cx={-chipW / 2 + 10} cy="0" r="3.5" fill={dc.providerColor} />
-                      <text x={6} y="4" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="700" fontSize="11">{dc.provider}</text>
-                    </g>
-                  </>
+                {full && !isCloud && (
+                  <g transform="translate(23 11.5) rotate(26.565)">
+                    <rect x="-27" y="-9" width="54" height="18" rx="9" fill="url(#tealPill)" filter="url(#chipShadow)" />
+                    <text x="0" y="4" textAnchor="middle" fill="#fff" fontFamily={BODY} fontWeight="700" fontSize="10.5">{dc.ports ?? 2} ports</text>
+                  </g>
                 )}
-
-                <circle cx={PH_HW - 4} cy={-PH_HH * 0.2} r="5" fill={meta.color} stroke="#fff" strokeWidth="1.5" />
-                {dc.status === "live" && (
-                  <circle cx={PH_HW - 4} cy={-PH_HH * 0.2} r="5" fill="none" stroke={meta.color} strokeWidth="1.4">
-                    <animate attributeName="r" from="5" to="12" dur="1.6s" repeatCount="indefinite" />
-                    <animate attributeName="stroke-opacity" from="0.7" to="0" dur="1.6s" repeatCount="indefinite" />
-                  </circle>
+                {full && (
+                  <g transform="translate(0 -62)">
+                    <rect x={-chipW / 2} y="-20" width={chipW} height="40" rx="10" fill="#ffffff" filter="url(#chipShadow)" />
+                    <text x="0" y="5" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="800" fontSize="14">{dc.provider}</text>
+                  </g>
                 )}
 
                 {(full || isHov || isSel) && (
@@ -840,8 +805,8 @@ function LinkPanel({ link, aEnd, bEnd, onClose, onOpenEnd }) {
 const EXP_W = 1600, EXP_H = 900;
 
 const DEFAULT_EXPORT_OPTS = {
-  grid: true, title: true, links: true, capacity: true, latency: true,
-  facility: true, city: true, provider: true, ports: true, beacon: true,
+  grid: true, title: true, links: true, capacity: true,
+  facility: true, city: true, provider: true, ports: true,
   status: { live: true, down: true, design: true },
 };
 
@@ -918,48 +883,27 @@ function ExportScene({ datacenters, links, opts, sceneRef }) {
           );
         })}
 
-        {opts.links && opts.latency && links.filter((l) => l.latencyMs != null).map((l) => {
-          const a = byId.get(l.from), b = byId.get(l.to);
-          if (!a || !b) return null;
-          const mx = (a.wx + b.wx) / 2, my = (a.wy + b.wy) / 2;
-          return (
-            <g key={`xlat-${linkId(l)}`} transform={`translate(${mx} ${my}) scale(${1 / s})`}>
-              <circle r="9" fill={C.down} />
-              <text y="3.5" textAnchor="middle" fill="#fff" fontFamily={DISPLAY} fontWeight="700" fontSize="11">!</text>
-              <g transform="translate(0 -42)">
-                <rect x="-54" y="-20" width="108" height="36" rx="9" fill="#fff" stroke="#f6d5d6" />
-                <text y="-4" textAnchor="middle" fill={C.down} fontFamily={DISPLAY} fontWeight="600" fontSize="11">High latency</text>
-                <text y="10" textAnchor="middle" fill={C.steel} fontFamily={BODY} fontSize="10.5">{l.latencyMs.toFixed(2)} ms</text>
-              </g>
-            </g>
-          );
-        })}
-
         {[...nodes].sort((a, b) => a.wy - b.wy || a.wx - b.wx).map((n) => {
           const dc = n.dc;
           const isCloud = dc.kind === "cloud";
-          const chipW = Math.max(38, dc.provider.length * 6.8 + 22);
+          const chipW = Math.max(64, dc.provider.length * 7.2 + 28);
           return (
             <g key={dc.id} transform={`translate(${n.wx} ${n.wy})`}>
               <ellipse cx="0" cy={PH_HH * 0.55} rx={PH_HW * 0.95} ry={PH_HH * 0.5} fill={C.navy} opacity="0.12" />
               <path d={PLATFORM_PATH} fill="#ffffff" stroke={C.sky} strokeWidth="1.25" strokeLinejoin="round" />
               <g filter="url(#xShadow)">{isCloud ? <CloudGlyph /> : <RackGlyph />}</g>
 
-              {opts.ports && (
-                <g transform={`translate(${PH_HW * 0.42} ${PH_HH * 0.42})`}>
-                  <rect x="-25" y="-9" width="50" height="18" rx="9" fill="url(#xPill)" />
+              {opts.ports && !isCloud && (
+                <g transform="translate(23 11.5) rotate(26.565)">
+                  <rect x="-27" y="-9" width="54" height="18" rx="9" fill="url(#xPill)" />
                   <text y="4" textAnchor="middle" fill="#fff" fontFamily={BODY} fontWeight="700" fontSize="10.5">{dc.ports ?? 2} ports</text>
                 </g>
               )}
               {opts.provider && (
-                <g transform={`translate(${-PH_HW * 0.28} ${isCloud ? -66 : -70})`}>
-                  <rect x={-chipW / 2} y="-11" width={chipW} height="22" rx="6" fill="#ffffff" stroke={C.hair} />
-                  <circle cx={-chipW / 2 + 10} r="3.5" fill={dc.providerColor} />
-                  <text x="6" y="4" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="700" fontSize="11">{dc.provider}</text>
+                <g transform="translate(0 -62)">
+                  <rect x={-chipW / 2} y="-20" width={chipW} height="40" rx="10" fill="#ffffff" stroke={C.hair} />
+                  <text y="5" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="800" fontSize="14">{dc.provider}</text>
                 </g>
-              )}
-              {opts.beacon && (
-                <circle cx={PH_HW - 4} cy={-PH_HH * 0.2} r="5" fill={STATUS[dc.status].color} stroke="#fff" strokeWidth="1.5" />
               )}
               {(opts.facility || opts.city) && (
                 <g transform={`translate(0 ${PH_HH + 12}) scale(${1 / s})`}>
@@ -1145,14 +1089,12 @@ function ExportOverlay({ datacenters, links, onClose, onDone }) {
             <p style={groupTitle}>PoP details</p>
             <Toggle k="facility" label="Facility name" />
             <Toggle k="city" label="City" />
-            <Toggle k="provider" label="Provider chip" />
+            <Toggle k="provider" label="Provider logo" />
             <Toggle k="ports" label="Port count" />
-            <Toggle k="beacon" label="Status dot" />
 
             <p style={groupTitle}>Connections</p>
             <Toggle k="links" label="Show connections" />
             <Toggle k="capacity" label="Capacity label" hint="e.g. 100 Gbps at each bend" />
-            <Toggle k="latency" label="Latency warnings" />
 
             <p style={groupTitle}>Include PoPs</p>
             <Toggle k="status.live" label="Live" />
