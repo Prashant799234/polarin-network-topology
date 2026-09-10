@@ -183,12 +183,12 @@ function Icon({ path, size = 20, w = 1.9 }) {
 }
 
 function RackGlyph() {
-  return <image href={DATACENTRE_ICON} x={-36} y={-36} width={72} height={72} preserveAspectRatio="xMidYMid meet" />;
+  return <image href={DATACENTRE_ICON} x={-36} y={-53} width={72} height={72} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* seated on its platform — underside just clears the tile */
 function CloudGlyph() {
-  return <image href={CLOUD_ICON} x={-38} y={-38} width={76} height={76} preserveAspectRatio="xMidYMid meet" />;
+  return <image href={CLOUD_ICON} x={-38} y={-50} width={76} height={76} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* ── the map ─────────────────────────────────────────────── */
@@ -496,7 +496,7 @@ function IsometricMap({
             const isSel = dc.id === selectedId;
             const isHov = dc.id === hover;
             const isCloud = dc.kind === "cloud";
-            const chipW = Math.max(64, dc.provider.length * 7.2 + 28);
+            const chipW = Math.max(46, dc.provider.length * 6 + 20);
             const edge = held ? (snap.valid ? C.teal : C.down) : isSel ? C.teal : isHov ? C.tealBright : C.sky;
 
             return (
@@ -521,9 +521,9 @@ function IsometricMap({
                   </g>
                 )}
                 {full && (
-                  <g transform="translate(0 -62)">
-                    <rect x={-chipW / 2} y="-20" width={chipW} height="40" rx="10" fill="#ffffff" filter="url(#chipShadow)" />
-                    <text x="0" y="5" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="800" fontSize="14">{dc.provider}</text>
+                  <g transform="translate(0 -61)">
+                    <rect x={-chipW / 2} y="-13" width={chipW} height="26" rx="8" fill="#ffffff" filter="url(#chipShadow)" />
+                    <text x="0" y="4" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="800" fontSize="11.5">{dc.provider}</text>
                   </g>
                 )}
 
@@ -886,7 +886,7 @@ function ExportScene({ datacenters, links, opts, sceneRef }) {
         {[...nodes].sort((a, b) => a.wy - b.wy || a.wx - b.wx).map((n) => {
           const dc = n.dc;
           const isCloud = dc.kind === "cloud";
-          const chipW = Math.max(64, dc.provider.length * 7.2 + 28);
+          const chipW = Math.max(46, dc.provider.length * 6 + 20);
           return (
             <g key={dc.id} transform={`translate(${n.wx} ${n.wy})`}>
               <ellipse cx="0" cy={PH_HH * 0.55} rx={PH_HW * 0.95} ry={PH_HH * 0.5} fill={C.navy} opacity="0.12" />
@@ -900,9 +900,9 @@ function ExportScene({ datacenters, links, opts, sceneRef }) {
                 </g>
               )}
               {opts.provider && (
-                <g transform="translate(0 -62)">
-                  <rect x={-chipW / 2} y="-20" width={chipW} height="40" rx="10" fill="#ffffff" stroke={C.hair} />
-                  <text y="5" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="800" fontSize="14">{dc.provider}</text>
+                <g transform="translate(0 -61)">
+                  <rect x={-chipW / 2} y="-13" width={chipW} height="26" rx="8" fill="#ffffff" stroke={C.hair} />
+                  <text y="4" textAnchor="middle" fill={dc.providerColor} fontFamily={DISPLAY} fontWeight="800" fontSize="11.5">{dc.provider}</text>
                 </g>
               )}
               {(opts.facility || opts.city) && (
