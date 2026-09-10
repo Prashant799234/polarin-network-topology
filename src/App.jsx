@@ -161,12 +161,12 @@ function Icon({ path, size = 20, w = 1.9 }) {
 }
 
 function RackGlyph() {
-  return <image href={DATACENTRE_ICON} x={-36} y={-72} width={72} height={72} preserveAspectRatio="xMidYMid meet" />;
+  return <image href={DATACENTRE_ICON} x={-36} y={-50} width={72} height={72} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* seated on its platform — underside just clears the tile */
 function CloudGlyph() {
-  return <image href={CLOUD_ICON} x={-38} y={-74} width={76} height={76} preserveAspectRatio="xMidYMid meet" />;
+  return <image href={CLOUD_ICON} x={-38} y={-52} width={76} height={76} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* ── the map ─────────────────────────────────────────────── */
