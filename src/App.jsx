@@ -515,7 +515,7 @@ function IsometricMap({
                 <g filter="url(#nodeShadow)">{isCloud ? <CloudGlyph /> : <RackGlyph />}</g>
 
                 {full && !isCloud && (
-                  <g transform="translate(23 11.5) rotate(26.565)">
+                  <g transform="translate(23 11.5) rotate(-26.565)">
                     <rect x="-27" y="-9" width="54" height="18" rx="9" fill="url(#tealPill)" filter="url(#chipShadow)" />
                     <text x="0" y="4" textAnchor="middle" fill="#fff" fontFamily={BODY} fontWeight="700" fontSize="10.5">{dc.ports ?? 2} ports</text>
                   </g>
@@ -894,7 +894,7 @@ function ExportScene({ datacenters, links, opts, sceneRef }) {
               <g filter="url(#xShadow)">{isCloud ? <CloudGlyph /> : <RackGlyph />}</g>
 
               {opts.ports && !isCloud && (
-                <g transform="translate(23 11.5) rotate(26.565)">
+                <g transform="translate(23 11.5) rotate(-26.565)">
                   <rect x="-27" y="-9" width="54" height="18" rx="9" fill="url(#xPill)" />
                   <text y="4" textAnchor="middle" fill="#fff" fontFamily={BODY} fontWeight="700" fontSize="10.5">{dc.ports ?? 2} ports</text>
                 </g>
