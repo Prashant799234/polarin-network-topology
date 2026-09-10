@@ -89,6 +89,28 @@ function tidy(dcs) {
 /* ── render constants ────────────────────────────────────── */
 const TILE_W = 188, TILE_H = 94;   // iso tile, for link routing
 const PH_HW = 46, PH_HH = 23;      // platform diamond half-size
+
+/** rounded-corner rhombus path — same 4-point diamond, with each vertex
+    softened by a short quadratic curve instead of a sharp point */
+function roundedDiamondPath(hw, hh, r = 7) {
+  const pts = [[0, -hh], [hw, 0], [0, hh], [-hw, 0]];
+  const n = pts.length;
+  let d = "";
+  for (let i = 0; i < n; i++) {
+    const prev = pts[(i - 1 + n) % n];
+    const curr = pts[i];
+    const next = pts[(i + 1) % n];
+    const toPrev = [prev[0] - curr[0], prev[1] - curr[1]];
+    const toNext = [next[0] - curr[0], next[1] - curr[1]];
+    const lenPrev = Math.hypot(...toPrev), lenNext = Math.hypot(...toNext);
+    const rr = Math.min(r, lenPrev / 2, lenNext / 2);
+    const p1 = [curr[0] + (toPrev[0] / lenPrev) * rr, curr[1] + (toPrev[1] / lenPrev) * rr];
+    const p2 = [curr[0] + (toNext[0] / lenNext) * rr, curr[1] + (toNext[1] / lenNext) * rr];
+    d += (i === 0 ? `M ${p1[0]} ${p1[1]} ` : `L ${p1[0]} ${p1[1]} `) + `Q ${curr[0]} ${curr[1]} ${p2[0]} ${p2[1]} `;
+  }
+  return d + "Z";
+}
+const PLATFORM_PATH = roundedDiamondPath(PH_HW, PH_HH, 7);
 const MIN_SCALE = 0.4, MAX_SCALE = 2.8;
 const LOD_CITY = 0.5;              // city labels appear
 const LOD_FULL = 0.92;             // facility, provider, ports appear
@@ -161,12 +183,17 @@ function Icon({ path, size = 20, w = 1.9 }) {
 }
 
 function RackGlyph() {
-  return <image href={DATACENTRE_ICON} x={-36} y={-50} width={72} height={72} preserveAspectRatio="xMidYMid meet" />;
+  return (
+    <>
+      <image href={DATACENTRE_ICON} x={-36} y={-36} width={72} height={72} preserveAspectRatio="xMidYMid meet" />
+      <circle cx="0" cy="-16.5" r="3.6" fill="#ED1D24" />
+    </>
+  );
 }
 
 /* seated on its platform — underside just clears the tile */
 function CloudGlyph() {
-  return <image href={CLOUD_ICON} x={-38} y={-52} width={76} height={76} preserveAspectRatio="xMidYMid meet" />;
+  return <image href={CLOUD_ICON} x={-38} y={-38} width={76} height={76} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* ── the map ─────────────────────────────────────────────── */
@@ -507,9 +534,9 @@ function IsometricMap({
                 <ellipse cx="0" cy={-22} rx="72" ry="60" fill="url(#cloudGlow)" />
                 <ellipse cx="0" cy={PH_HH * 0.55} rx={PH_HW * 0.95} ry={PH_HH * 0.5} fill={C.navy} opacity={isHov || isSel || held ? 0.22 : 0.13} />
 
-                <polygon points={`0,${-PH_HH} ${PH_HW},0 0,${PH_HH} ${-PH_HW},0`} fill="#ffffff"
+                <path d={PLATFORM_PATH} fill="#ffffff"
                   stroke={edge} strokeWidth={isSel || held ? 2.4 : 1.25} strokeLinejoin="round" />
-                <polygon points={`0,${-PH_HH} ${PH_HW},0 0,${PH_HH} ${-PH_HW},0`} fill="url(#cloudGlow)" opacity="0.5" />
+                <path d={PLATFORM_PATH} fill="url(#cloudGlow)" opacity="0.5" />
 
                 <g filter="url(#nodeShadow)">{isCloud ? <CloudGlyph /> : <RackGlyph />}</g>
 
@@ -915,7 +942,7 @@ function ExportScene({ datacenters, links, opts, sceneRef }) {
           return (
             <g key={dc.id} transform={`translate(${n.wx} ${n.wy})`}>
               <ellipse cx="0" cy={PH_HH * 0.55} rx={PH_HW * 0.95} ry={PH_HH * 0.5} fill={C.navy} opacity="0.12" />
-              <polygon points={`0,${-PH_HH} ${PH_HW},0 0,${PH_HH} ${-PH_HW},0`} fill="#ffffff" stroke={C.sky} strokeWidth="1.25" strokeLinejoin="round" />
+              <path d={PLATFORM_PATH} fill="#ffffff" stroke={C.sky} strokeWidth="1.25" strokeLinejoin="round" />
               <g filter="url(#xShadow)">{isCloud ? <CloudGlyph /> : <RackGlyph />}</g>
 
               {opts.ports && (
