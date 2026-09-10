@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { DATACENTRE_ICON, CLOUD_ICON } from "./nodeIcons.js";
 
 /* ────────────────────────────────────────────────────────────
    Polarin — Network Topology
@@ -160,35 +161,12 @@ function Icon({ path, size = 20, w = 1.9 }) {
 }
 
 function RackGlyph() {
-  const hw = 31, hh = 15.5, th = 13;
-  return (
-    <g>
-      {[-14, -30, -46].map((cy, i) => (
-        <g key={i}>
-          <polygon points={`${-hw},${cy} 0,${cy + hh} 0,${cy + hh + th} ${-hw},${cy + th}`} fill="#c8deef" />
-          <polygon points={`${hw},${cy} 0,${cy + hh} 0,${cy + hh + th} ${hw},${cy + th}`} fill="#e3eff8" />
-          <polygon points={`0,${cy - hh} ${hw},${cy} 0,${cy + hh} ${-hw},${cy}`} fill="url(#rackTop)" stroke="#ffffff" strokeWidth="0.8" />
-          <circle cx={hw * 0.55} cy={cy + hh * 0.55 + 6} r="1.9" fill="#5fb8d6" />
-          <circle cx={hw * 0.38} cy={cy + hh * 0.38 + 7} r="1.9" fill="#9fd0e4" />
-          <polygon points={`${-hw * 0.72},${cy + hh * 0.36 + 3} ${-hw * 0.24},${cy + hh * 0.6 + 3} ${-hw * 0.24},${cy + hh * 0.6 + 5.4} ${-hw * 0.72},${cy + hh * 0.36 + 5.4}`} fill="#a9c8de" opacity="0.6" />
-        </g>
-      ))}
-    </g>
-  );
+  return <image href={DATACENTRE_ICON} x={-36} y={-72} width={72} height={72} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* seated on its platform — underside just clears the tile */
 function CloudGlyph() {
-  return (
-    <g transform="translate(0 -30)">
-      <ellipse cx="0" cy="24" rx="26" ry="8" fill="#b9cfe0" opacity="0.35" />
-      <ellipse cx="-17" cy="6" rx="18" ry="13" fill="#ffffff" />
-      <ellipse cx="17" cy="8" rx="16" ry="11" fill="#ffffff" />
-      <ellipse cx="0" cy="-5" rx="21" ry="16" fill="#ffffff" />
-      <ellipse cx="0" cy="10" rx="30" ry="11" fill="#f6fafd" />
-      <path d="M -30 12 Q -18 22 0 22 Q 19 22 30 12 Q 18 18 0 18 Q -18 18 -30 12 Z" fill="#dceaf5" />
-    </g>
-  );
+  return <image href={CLOUD_ICON} x={-38} y={-74} width={76} height={76} preserveAspectRatio="xMidYMid meet" />;
 }
 
 /* ── the map ─────────────────────────────────────────────── */
@@ -1305,38 +1283,63 @@ function AddDatacenterDialog({ datacenters, onAdd, onClose }) {
 }
 
 /* ── header ──────────────────────────────────────────────── */
+/* Material Symbols glyphs used only in the header — filled paths, not stroked */
+function ContactSupportIcon({ size = 24, color = C.steel }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path fill={color} d="M11.75 19H11.5C9.13333 19 7.125 18.175 5.475 16.525C3.825 14.875 3 12.8667 3 10.5C3 8.13333 3.825 6.125 5.475 4.475C7.125 2.825 9.13333 2 11.5 2C12.6833 2 13.7875 2.22083 14.8125 2.6625C15.8375 3.10417 16.7375 3.7125 17.5125 4.4875C18.2875 5.2625 18.8958 6.1625 19.3375 7.1875C19.7792 8.2125 20 9.31667 20 10.5C20 12.7333 19.3708 14.8083 18.1125 16.725C16.8542 18.6417 15.2667 20.1417 13.35 21.225C13.1833 21.3083 13.0167 21.3542 12.85 21.3625C12.6833 21.3708 12.5333 21.3333 12.4 21.25C12.2667 21.1667 12.15 21.0583 12.05 20.925C11.95 20.7917 11.8917 20.6333 11.875 20.45L11.75 19ZM14 18.35C15.1833 17.35 16.1458 16.1792 16.8875 14.8375C17.6292 13.4958 18 12.05 18 10.5C18 8.68333 17.3708 7.14583 16.1125 5.8875C14.8542 4.62917 13.3167 4 11.5 4C9.68333 4 8.14583 4.62917 6.8875 5.8875C5.62917 7.14583 5 8.68333 5 10.5C5 12.3167 5.62917 13.8542 6.8875 15.1125C8.14583 16.3708 9.68333 17 11.5 17H14V18.35ZM11.475 15.975C11.7583 15.975 12 15.875 12.2 15.675C12.4 15.475 12.5 15.2333 12.5 14.95C12.5 14.6667 12.4 14.425 12.2 14.225C12 14.025 11.7583 13.925 11.475 13.925C11.1917 13.925 10.95 14.025 10.75 14.225C10.55 14.425 10.45 14.6667 10.45 14.95C10.45 15.2333 10.55 15.475 10.75 15.675C10.95 15.875 11.1917 15.975 11.475 15.975ZM9.3 8.375C9.48333 8.45833 9.66667 8.4625 9.85 8.3875C10.0333 8.3125 10.1833 8.19167 10.3 8.025C10.45 7.825 10.625 7.67083 10.825 7.5625C11.025 7.45417 11.25 7.4 11.5 7.4C11.9 7.4 12.225 7.5125 12.475 7.7375C12.725 7.9625 12.85 8.25 12.85 8.6C12.85 8.81667 12.7875 9.03333 12.6625 9.25C12.5375 9.46667 12.3167 9.73333 12 10.05C11.5833 10.4167 11.275 10.7625 11.075 11.0875C10.875 11.4125 10.775 11.7417 10.775 12.075C10.775 12.275 10.8458 12.4458 10.9875 12.5875C11.1292 12.7292 11.3 12.8 11.5 12.8C11.7 12.8 11.8667 12.725 12 12.575C12.1333 12.425 12.2333 12.25 12.3 12.05C12.3833 11.7667 12.5333 11.5083 12.75 11.275C12.9667 11.0417 13.1667 10.8333 13.35 10.65C13.7 10.3 13.9625 9.95 14.1375 9.6C14.3125 9.25 14.4 8.9 14.4 8.55C14.4 7.78333 14.1375 7.16667 13.6125 6.7C13.0875 6.23333 12.3833 6 11.5 6C10.9667 6 10.475 6.12917 10.025 6.3875C9.575 6.64583 9.20833 7 8.925 7.45C8.825 7.63333 8.8125 7.8125 8.8875 7.9875C8.9625 8.1625 9.1 8.29167 9.3 8.375Z" />
+    </svg>
+  );
+}
+function NotificationsUnreadIcon({ size = 24, color = C.steel }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path fill={color} d="M12 22C11.45 22 10.9792 21.8042 10.5875 21.4125C10.1958 21.0208 10 20.55 10 20H14C14 20.55 13.8042 21.0208 13.4125 21.4125C13.0208 21.8042 12.55 22 12 22ZM5 19C4.71667 19 4.47917 18.9042 4.2875 18.7125C4.09583 18.5208 4 18.2833 4 18C4 17.7167 4.09583 17.4792 4.2875 17.2875C4.47917 17.0958 4.71667 17 5 17H6V10C6 8.61667 6.41667 7.3875 7.25 6.3125C8.08333 5.2375 9.16667 4.53333 10.5 4.2V3.5C10.5 3.08333 10.6458 2.72917 10.9375 2.4375C11.2292 2.14583 11.5833 2 12 2C12.4167 2 12.7708 2.14583 13.0625 2.4375C13.3542 2.72917 13.5 3.08333 13.5 3.5V3.825C13.3167 4.19167 13.1833 4.56667 13.1 4.95C13.0167 5.33333 12.9833 5.725 13 6.125C12.8333 6.09167 12.6708 6.0625 12.5125 6.0375C12.3542 6.0125 12.1833 6 12 6C10.9 6 9.95833 6.39167 9.175 7.175C8.39167 7.95833 8 8.9 8 10V17H16V10.575C16.3 10.7083 16.6208 10.8125 16.9625 10.8875C17.3042 10.9625 17.65 11 18 11V17H19C19.2833 17 19.5208 17.0958 19.7125 17.2875C19.9042 17.4792 20 17.7167 20 18C20 18.2833 19.9042 18.5208 19.7125 18.7125C19.5208 18.9042 19.2833 19 19 19H5ZM18 9C17.1667 9 16.4583 8.70833 15.875 8.125C15.2917 7.54167 15 6.83333 15 6C15 5.16667 15.2917 4.45833 15.875 3.875C16.4583 3.29167 17.1667 3 18 3C18.8333 3 19.5417 3.29167 20.125 3.875C20.7083 4.45833 21 5.16667 21 6C21 6.83333 20.7083 7.54167 20.125 8.125C19.5417 8.70833 18.8333 9 18 9Z" />
+      <circle cx="18" cy="6" r="3" fill={C.down} />
+    </svg>
+  );
+}
+function ExpandCircleDownIcon({ size = 24, color = C.steel }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path fill={color} d="M12 12.675L9.625 10.3C9.44167 10.1167 9.2125 10.025 8.9375 10.025C8.6625 10.025 8.425 10.1167 8.225 10.3C8.025 10.5 7.925 10.7375 7.925 11.0125C7.925 11.2875 8.025 11.525 8.225 11.725L11.3 14.8C11.5 15 11.7333 15.1 12 15.1C12.2667 15.1 12.5 15 12.7 14.8L15.8 11.7C16 11.5 16.0958 11.2667 16.0875 11C16.0792 10.7333 15.975 10.5 15.775 10.3C15.575 10.1167 15.3417 10.0208 15.075 10.0125C14.8083 10.0042 14.575 10.1 14.375 10.3L12 12.675ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.875 17.675 6.325C16.125 4.775 14.2333 4 12 4C9.76667 4 7.875 4.775 6.325 6.325C4.775 7.875 4 9.76667 4 12C4 14.2333 4.775 16.125 6.325 17.675C7.875 19.225 9.76667 20 12 20Z" />
+    </svg>
+  );
+}
+
+function IconChip({ children }) {
+  return (
+    <div style={{ display: "flex", width: 32, height: 32, alignItems: "center", justifyContent: "center", borderRadius: 999, background: "#f8fafb", border: `1px solid ${C.line}`, flexShrink: 0 }}>
+      {children}
+    </div>
+  );
+}
+
 function Header() {
   const nav = ["Dashboard", "Services", "Settings", "Help"];
   return (
-    <div style={{ display: "flex", height: 72, alignItems: "center", gap: 32, background: "#f8fafb", borderBottom: `1px solid ${C.line}`, padding: "0 28px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true">
-          <circle cx="16" cy="16" r="15" fill={C.navy} />
-          <path d="M16 5 L27 16 L16 27 L5 16 Z" fill="none" stroke={C.sky} strokeWidth="1.4" />
-          <circle cx="16" cy="16" r="5.2" fill={C.teal} />
-          {[[16, 5], [27, 16], [16, 27], [5, 16]].map(([cx, cy], i) => <circle key={i} cx={cx} cy={cy} r="2.1" fill={C.sky} />)}
-        </svg>
-        <span style={{ fontFamily: DISPLAY, fontSize: 21, fontWeight: 700, letterSpacing: "-0.01em", color: C.navy }}>polarin</span>
-      </div>
-      <nav style={{ display: "flex", alignItems: "center", gap: 26 }}>
+    <div style={{ display: "flex", height: 72, alignItems: "center", justifyContent: "space-between", background: "#ffffff", borderBottom: "0.5px solid #e2e8f1", padding: "0 24px" }}>
+      <img src="/polarin-mark.svg" alt="Polarin" style={{ height: 28, width: "auto", display: "block" }} />
+
+      <nav style={{ display: "flex", alignItems: "center", height: "100%" }}>
         {nav.map((n, i) => (
-          <button key={n} style={{ ...btnBare, fontFamily: BODY, fontSize: 14, fontWeight: 700, color: i === 0 ? C.teal : C.navy }}>{n}</button>
+          <div key={n} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, height: "100%", justifyContent: "center" }}>
+            <button style={{ ...btnBare, padding: "0 16px", fontFamily: BODY, fontSize: 14, fontWeight: 700, color: i === 0 ? C.teal : C.navy }}>{n}</button>
+            <div style={{ width: "100%", height: 2, background: i === 0 ? C.teal : "transparent" }} />
+          </div>
         ))}
       </nav>
-      <div style={{ flex: 1 }} />
-      <div style={{ display: "flex", alignItems: "center", gap: 18, color: C.steel }}>
-        <Icon path="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5" size={19} />
-        <span style={{ position: "relative", display: "inline-flex" }}>
-          <Icon path="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8M13.7 21a2 2 0 0 1-3.4 0" size={19} />
-          <span style={{ position: "absolute", top: -1, right: -1, width: 7, height: 7, borderRadius: 999, background: C.down, border: "1.5px solid #f8fafb" }} />
-        </span>
-        <span style={{ width: 1, height: 26, background: C.line }} />
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ display: "flex", width: 36, height: 36, alignItems: "center", justifyContent: "center", borderRadius: 999, background: C.sky, fontFamily: DISPLAY, fontSize: 13, fontWeight: 700, color: C.navy }}>AQ</div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <IconChip><ContactSupportIcon size={20} /></IconChip>
+        <IconChip><NotificationsUnreadIcon size={20} /></IconChip>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 8 }}>
+          <img src="/user-avatar.png" alt="" style={{ width: 32, height: 32, borderRadius: 999, objectFit: "cover", border: `1px solid ${C.line}`, flexShrink: 0 }} />
           <div style={{ lineHeight: 1.3 }}>
             <p style={{ margin: 0, fontFamily: BODY, fontSize: 12, fontWeight: 700, color: C.navy }}>Abram Qureshi</p>
             <p style={{ margin: 0, fontFamily: BODY, fontSize: 12, fontWeight: 700, color: C.steel }}>Admin</p>
           </div>
+          <ExpandCircleDownIcon size={20} />
         </div>
       </div>
     </div>
@@ -1401,11 +1404,6 @@ export default function App() {
     setSelectedId(placed.id);
     flash(`${placed.facility} placed at grid ${spot.u}, ${spot.v}.`);
     setTimeout(() => controls.current?.centreOn(placed.id), 80);
-  };
-
-  const tidyUp = () => {
-    setDatacenters((all) => tidy(all));
-    flash("Snapped every PoP to its grid point.");
   };
 
   const resetAll = () => {
@@ -1480,12 +1478,6 @@ export default function App() {
           </button>
 
           <div style={{ pointerEvents: "auto", display: "flex", flexWrap: "wrap", gap: 8 }}>
-            <button onClick={tidyUp} style={ghostBtn}>
-              <Icon path="M4 6h16M4 12h10M4 18h6" size={17} />Tidy grid
-            </button>
-            <button onClick={resetAll} style={ghostBtn}>
-              <Icon path="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" size={17} />Reset view
-            </button>
             <button onClick={() => setExporting(true)} style={ghostBtn}>
               <Icon path="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" size={17} />Export
             </button>
